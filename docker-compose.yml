@@ -1,0 +1,81 @@
+version: '3.7'
+
+services:
+  django:
+    container_name: urrobot_django
+    build: .
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/home/urrobot/urrobot/static
+    env_file:
+      - ./.envs/.env.dev
+    expose:
+      - 8000
+    depends_on:
+      - db
+
+  db:
+    container_name: urrobot_postgres
+    image: postgres:11
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=urrobot_db
+
+  celery:
+    build: .
+    command: celery -A config worker -l INFO
+    env_file:
+      - ./.envs/.env.dev
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - django
+      - redis
+
+  celery_beat:
+    build: .
+    command: celery -A config beat
+    env_file:
+      - ./.envs/.env.dev
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - django
+      - redis
+
+  redis:
+    image: redis
+
+  nginx:
+    image: nginx:1.15-alpine
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - static_volume:/home/urrobot/urrobot/static
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    depends_on:
+     - django
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  postgres_data:
+  static_volume:
+
+
+
+

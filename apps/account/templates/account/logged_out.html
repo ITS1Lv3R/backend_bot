@@ -1,0 +1,10 @@
+{% extends "main/base.html" %}
+
+{% block title %}Выход из профиля{% endblock %}
+
+{% block content %}
+  <div id="main">
+      <p>Вы успешно вышли из своего профиля. Вы можете снова войти на
+      <a href="{% url 'login' %}">сайт</a></p>
+  </div>
+{% endblock %}

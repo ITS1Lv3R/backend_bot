@@ -1,0 +1,36 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}Вход на сайт{% endblock %}
+
+
+{% block content %}
+  <div id="main">
+
+      {% if messages %}
+          <ul class="messages">
+           {% for message in messages %}
+            <li class="{{ message.tags }}">
+              {{ message|safe }}
+                <a href="#" class="close">x</a>
+            </li>
+           </ul>
+          {% endfor %}
+      {% endif %}
+
+    <h4>Заполните имя пользователя и пароль. Если у вас нет аккаунта, перейдите на форму
+           <a href="{% url 'register' %}">Регистрации</a></h4><br>
+
+    <div class="login">
+        <div id="login_form">
+            <form action="{% url 'login' %}" method="post">
+                  {{ form.as_p }}
+                  {% csrf_token %}
+                  <input type="submit" value="Войти на сайт" >
+            </form>
+              <a href="{% url 'register' %}"><input type="submit" value="Регистрация"></a><br><br>
+              <a href="{% url 'password_reset' %}">Забыли Ваш пароль?</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

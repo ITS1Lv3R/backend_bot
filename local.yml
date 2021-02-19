@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+  django:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./.envs/.env.dev
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+#      - redis
+  db:
+    image: postgres:11
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=urrobot_db
+#  celery:
+#    build: .
+#    command: celery -A config worker -l INFO
+#    env_file:
+#      - ./.envs/.env.dev
+#    volumes:
+#      - .:/usr/src/app
+#    depends_on:
+#      - django
+#      - redis
+#  celery_beat:
+#    build: .
+#    command: celery -A config beat
+#    env_file:
+#      - ./.envs/.env.dev
+#    volumes:
+#      - .:/usr/src/app
+#    depends_on:
+#      - django
+#      - redis
+#  redis:
+#    image: redis
+
+volumes:
+  postgres_data:
+
+
+
+
+

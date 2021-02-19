@@ -1,0 +1,29 @@
+{% extends "main/base.html" %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+<div id="main">
+     <p><a href="{% url 'main:index' %}">Сайт</a> / Личный кабинет</p>
+
+    {% if messages %}
+      <ul class="messages">
+       {% for message in messages %}
+        <li class="{{ message.tags }}">
+          {{ message|safe }}
+            <a href="/account" class="close">x</a>
+        </li>
+      </ul>
+       {% endfor %}
+    {% endif %}
+
+    <h4>Вы можете изменить данные профиля:</h4>
+    <form action="." method="post" class="register_form">
+          {{ user_form.as_p }}
+          {% csrf_token %}
+          <p><input type="submit" value="Сохранить изменения"></p>
+    </form><br/>
+    <a href="{% url 'password_change' %}"><input type="submit" value="Сменить пароль"></a>
+
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Создайте новый аккаунт{% endblock %}
+
+{% block content %}
+
+<div id="main">
+        {% if messages %}
+          <ul class="messages">
+           {% for message in messages %}
+            <li class="{{ message.tags }}">
+              {{ message|safe }}
+                <a href="." class="close">x</a>
+            </li>
+          </ul>
+           {% endfor %}
+        {% endif %}
+
+    <p><a href="{% url 'main:index' %}">Сайт</a> / Регистрация</p>
+    <h1>Создайте новый аккаунт</h1>
+    <p>Пожалуйста, заполните все необходимые поля в форме:</p>
+
+    <form action="." method="post" class="register_form">
+          {{ user_form.as_p }}
+          <input type="submit" value="Создать аккаунт"></td>
+           {% csrf_token %}
+     </form>
+
+</div>
+{% endblock %}

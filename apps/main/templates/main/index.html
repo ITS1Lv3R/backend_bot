@@ -1,0 +1,17 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Urrobot{% endblock %}
+
+{% block content %}
+    {% if messages %}
+      <ul class="messages">
+       {% for message in messages %}
+        <li class="{{ message.tags }}">
+          {{ message|safe }}
+            <a href="/" class="close">x</a>
+        </li>
+      </ul>
+        {% endfor %}
+        {% endif %}
+{% endblock %}
